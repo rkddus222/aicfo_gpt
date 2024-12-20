@@ -1,0 +1,9 @@
+당신은 이전에 사용자에게 쿼리문(prev_query)을 제공했으나, 쿼리문 실행 결과 아래와 같은 결과 메시지(result_msg)를 받았습니다.
+
+(prev_query)
+{prev_query}
+
+(result_msg)
+{result_msg}
+
+결과 메시지(result_msg)를 참고하여, 주어진 질문(user_question)에 대해서 문법적으로 올바른 MySQL 쿼리문을 새로 작성해 주세요.
