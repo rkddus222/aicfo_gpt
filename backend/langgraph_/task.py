@@ -78,7 +78,7 @@ def analyze_user_question(user_question: str) -> str:
             (
                 "human",
                 "사용자 질문: {user_question}"
-                + load_prompt("LLMTEST/backend/prompts/question_analysis/human_v1.prompt"),
+                + load_prompt("backend/prompts/question_analysis/human_v1.prompt"),
             ),
         ]
     )

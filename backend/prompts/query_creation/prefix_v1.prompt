@@ -4,19 +4,21 @@
 날짜 값이 필요한 경우 오늘은 {today}입니다.
 
 *DB SCHEMA 정보:
-테이블 : learning_dataset
-seq: seq 번호
-rept_code: 보고서 코드
-bsns_year: 사업 연도
-corp_code_name: 회사 이름
-sj_div: 재무제표구분 이름
-sj_nm: 재무제표구분 이름
-account_nm: 계정명(계정명칭 ex) 자본총계)
-thstrm_nm: 당기명(ex)2023년 당기)
-thstrm_amount: 당기금액(9,999,999,999 ※ 분/반기 보고서이면서 (포괄)손익계산서 일 경우 [3개월] 금액)
-frmtrm_nm: 전기명(ex) 2022년 전기)
-frmtrm_amount: 전기금액
-frmtrm_q_amount: 전기금액(분/반기)
+테이블 : expenditure_details
+
+region: 지역 (예: 서울, 부산 등)
+local_government: 자치단체 이름
+account: 회계 정보
+project_name: 세부 사업명
+total_budget: 예산 현액 (계)
+national_budget: 예산 현액 (국비)
+provincial_budget: 예산 현액 (시도비)
+municipal_budget: 예산 현액 (시군구비)
+other_budget: 예산 현액 (기타)
+expenditure: 지출액
+remaining_budget: 집행잔액
+sector: 분야 (예: 보건, 교육 등)
+national_funding: 국비
 
 사용자 질문:
 {user_question}
