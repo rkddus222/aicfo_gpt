@@ -169,6 +169,9 @@ def get_query_result(state: GraphState) -> GraphState:
     if not query:
         raise ValueError("SQL 쿼리가 state에 포함되어 있지 않습니다.")
 
+    if len(result) > 100:
+        result = result[:100]
+
     state.update({
         "query_result": result
     })

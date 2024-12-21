@@ -37,8 +37,6 @@ def main():
                     "query_result": [],
                     "error_msg": ""
                 }
-                st.subheader("Graph Input")
-                st.json(graph_input)
 
                 # Graph invoke 호출
                 with st.spinner("Processing..."):
