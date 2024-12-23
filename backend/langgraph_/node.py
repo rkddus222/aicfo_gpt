@@ -1,5 +1,5 @@
 import os
-from typing import TypedDict, List, Any
+from typing import TypedDict, List, Any, Dict
 from .task import (
     evaluate_user_question,
     simple_conversation,
@@ -42,7 +42,7 @@ class GraphState(TypedDict):
     flow_status: str  # KEEP, REGENERATE, RE-RETRIEVE, RESELECT, RE-REQUEST
     max_query_fix: int
     query_fix_cnt: int
-    query_result: List[str]
+    query_result: Dict[str, Any]
     error_msg: str
 
 
