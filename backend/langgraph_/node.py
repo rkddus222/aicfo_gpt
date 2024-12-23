@@ -42,7 +42,7 @@ class GraphState(TypedDict):
     flow_status: str  # KEEP, REGENERATE, RE-RETRIEVE, RESELECT, RE-REQUEST
     max_query_fix: int
     query_fix_cnt: int
-    query_result: List[Any]
+    query_result: List[str]
     error_msg: str
 
 
@@ -158,24 +158,37 @@ def query_creation(state: GraphState) -> GraphState:
     return state
 
 def get_query_result(state: GraphState) -> GraphState:
+    # 환경 변수에서 DB 정보 가져오기
     host = os.getenv("DB_HOST")
     database = os.getenv("DB_DATABASE")
     user = os.getenv("DB_USER")
     password = os.getenv("DB_PASSWORD")
     port = os.getenv("DB_PORT")
-    query = state["sql_query"]
-    result = execute_query(host, database, user, password, port, query)
 
+    # SQL 쿼리 가져오기
+    query = state.get("sql_query")
     if not query:
         raise ValueError("SQL 쿼리가 state에 포함되어 있지 않습니다.")
 
-    if len(result) > 100:
-        result = result[:100]
+    # DB 쿼리 실행
+    result = execute_query(host, database, user, password, port, query)
 
+    print("쿼리 결과", result)
+
+    # 결과가 None인 경우 빈 리스트로 초기화
+    if result is None or not result["rows"]:
+        result = {"columns": [], "rows": []}
+
+    # 결과가 너무 많을 경우 상위 100개로 제한
+    if len(result["rows"]) > 100:
+        result["rows"] = result["rows"][:100]
+
+    # 상태 업데이트
     state.update({
         "query_result": result
     })
     return state
+
 
 
 def sql_conversation(state: GraphState) -> GraphState:

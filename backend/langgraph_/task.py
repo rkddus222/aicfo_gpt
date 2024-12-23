@@ -222,10 +222,9 @@ def execute_query(host, database, user, password, port, query):
         query (str): 실행할 SQL 쿼리
 
     Returns:
-        list: 쿼리 결과
+        dict: {"columns": 열 이름 리스트, "rows": 데이터 리스트}
     """
     try:
-
         # 데이터베이스 연결
         connection = psycopg2.connect(
             host=host,
@@ -240,14 +239,17 @@ def execute_query(host, database, user, password, port, query):
 
         # SQL 쿼리 실행
         cursor.execute(query)
-        result = cursor.fetchall()
+
+        # 결과 가져오기
+        rows = cursor.fetchall()
+        columns = [desc[0] for desc in cursor.description]  # 열 이름 추출
 
         # 연결 닫기
         cursor.close()
         connection.close()
 
         print("PostgreSQL 데이터베이스 연결 종료")
-        return result
+        return {"columns": columns, "rows": rows}
 
     except psycopg2.Error as e:
         print("PostgreSQL 연결 오류:")

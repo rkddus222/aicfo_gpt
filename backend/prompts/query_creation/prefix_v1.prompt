@@ -19,7 +19,7 @@ other_budget: 예산 현액 (기타)
 expenditure: 지출액
 remaining_budget: 집행잔액
 sector: 분야 (예: 보건, 교육 등)
-national_funding: 국비
+national_funding: 부문 (예: 취약계층지원, 환경보호일반 등)
 
 사용자 질문:
 {user_question}
@@ -28,6 +28,9 @@ national_funding: 국비
 1. 사용자의 질문을 기반으로 정확한 MySQL 쿼리문을 작성하세요.
 2. 결과는 반드시 **```sql** 태그** 안에 작성**해야 합니다.
 3. **설명**이나 **인사말**은 불필요합니다. **쿼리만** 작성하세요.
+4. region은 두글자로 구성되어 있습니다.
+5. 비율 관련 질문의 경우에는 0으로 나누지 않도록 WHERE 조건에 추가 해주세요.
+6. 결과에서 Column 명은 한국어 별칭으로 변환해주세요. 별칭에는 큰따옴표(")를 사용해주세요.
 
 MySQL 쿼리문:
 ```sql

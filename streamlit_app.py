@@ -1,9 +1,11 @@
 import streamlit as st
 from backend.langgraph_.graph import make_graph
+import pandas as pd
 
 
 def main():
     try:
+        # Graph 초기화
         graph = make_graph()
     except Exception as e:
         st.error(f"Graph 초기화 오류: {str(e)}")
@@ -11,12 +13,13 @@ def main():
 
     st.header("DAQUV LLM")
 
-    task = st.text_input("Enter your task:")
+    # 사용자 입력 받기
+    task = st.text_input("질문을 입력해주세요.")
 
-    if st.button("Process"):
+    if st.button("입력"):
         if task:
             try:
-                # GraphState 입력값 확인
+                # GraphState 입력값 구성
                 graph_input = {
                     "llm_api": "ChatGPT-4o",
                     "user_question": task,
@@ -39,19 +42,30 @@ def main():
                 }
 
                 # Graph invoke 호출
-                with st.spinner("Processing..."):
+                with st.spinner("잠시만 기다려주세요..."):
                     data = graph.invoke(graph_input)
 
-                # 반환값 확인
-                st.subheader("Graph Output")
-                st.json(data)
-
-                # 결과 확인
+                # Graph 결과 확인
                 final_answer = data.get("final_answer", "No final answer returned.")
                 sql_query = data.get("sql_query", "No sql_query returned.")
+                query_result = data.get("query_result", {"columns": [], "rows": []})
+
                 st.subheader("결과")
-                st.write(sql_query)
                 st.write(final_answer)
+
+                # Query 결과를 DataFrame으로 표시
+                if query_result and query_result.get("rows"):
+                    st.subheader("상세 결과")
+                    st.write(sql_query)
+                    columns = query_result.get("columns", [])
+                    rows = query_result.get("rows", [])
+
+                    # DataFrame 변환 및 표시
+                    df = pd.DataFrame(rows, columns=columns)
+                    df.index = df.index + 1
+                    st.dataframe(df, use_container_width=True)
+                else:
+                    st.warning("Query result is empty or not in a tabular format.")
 
             except Exception as e:
                 st.error(f"Error: {str(e)}")
