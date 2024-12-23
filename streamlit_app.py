@@ -9,7 +9,7 @@ def main():
         st.error(f"Graph 초기화 오류: {str(e)}")
         return
 
-    st.header("강연 테스트")
+    st.header("DAQUV LLM")
 
     task = st.text_input("Enter your task:")
 
