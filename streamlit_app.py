@@ -64,8 +64,6 @@ def main():
                     df = pd.DataFrame(rows, columns=columns)
                     df.index = df.index + 1
                     st.dataframe(df, use_container_width=True)
-                else:
-                    st.warning("Query result is empty or not in a tabular format.")
 
             except Exception as e:
                 st.error(f"Error: {str(e)}")
