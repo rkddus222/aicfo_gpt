@@ -11,7 +11,7 @@ def main():
         st.error(f"Graph 초기화 오류: {str(e)}")
         return
 
-    st.header("DAQUV LLM")
+    st.header("AICFO GPT")
 
     # 사용자 입력 받기
     task = st.text_input("질문을 입력해주세요.")
