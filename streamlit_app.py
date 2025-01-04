@@ -21,24 +21,13 @@ def main():
             try:
                 # GraphState 입력값 구성
                 graph_input = {
-                    "llm_api": "ChatGPT-4o",
                     "user_question": task,
+                    "selected_question": "",
                     "user_question_eval": "",
                     "user_question_analyze": "",
-                    "collected_questions": [],
-                    "ask_user": 0,
                     "final_answer": "",
-                    "context_cnt": 0,
-                    "table_contexts": [],
-                    "table_contexts_ids": [],
-                    "need_clarification": False,
-                    "sample_info": 0,
                     "sql_query": "",
-                    "flow_status": "KEEP",
-                    "max_query_fix": 3,
-                    "query_fix_cnt": 0,
                     "query_result": [],
-                    "error_msg": ""
                 }
 
                 # Graph invoke 호출

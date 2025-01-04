@@ -18,13 +18,3 @@ llm = ChatOpenAI(
     model_kwargs={"top_p": 0.9},  # top_p 값을 여기에 설정
     openai_api_key=OPENAI_API_KEY
 )
-
-# GPT-4 Turbo 모델 설정
-closed_llm = ChatOpenAI(
-    model="gpt-4", temperature=0, top_p=0, openai_api_key=OPENAI_API_KEY
-)
-
-# 동일 모델 다른 설정
-solver_llm = ChatOpenAI(
-    model="gpt-4o", temperature=0, openai_api_key=OPENAI_API_KEY
-)

@@ -1,11 +1,36 @@
+from typing import Any
+
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.messages import SystemMessage
 from backend.llm_models.model import llm
-from typing import List
 import psycopg2
-from .utils import load_prompt
 import re
+
+def load_prompt(prompt_path: str) -> str:
+    """
+    입력된 경로에 존재하는 프롬프트 파일을 로드합니다.
+
+    Args:
+        prompt_path (str): 프롬프트 파일의 경로.
+
+    Returns:
+        str: 로드된 프롬프트 내용.
+    """
+    with open(f"{prompt_path}", "r", encoding="utf-8") as f:
+        prompt = f.read()
+
+    return prompt
+
+def extract_table_name_from_text(result: str) -> str:
+    lines = result.split("\n")  # 줄바꿈으로 분리
+    for line in lines:
+        if line.startswith("- 조회 필요 테이블:"):  # 해당 키워드로 시작하는 줄 찾기
+            # 콜론 뒤의 값을 가져온 후 괄호 및 내용 제거
+            raw_value = line.split(":", 1)[1].strip()
+            cleaned_value = re.sub(r"\s*\(.*?\)", "", raw_value)  # 괄호와 그 안의 내용 제거
+            return cleaned_value
+    return None  # 값이 없으면 None 반환
 
 
 def evaluate_user_question(user_question: str) -> str:
@@ -85,79 +110,12 @@ def analyze_user_question(user_question: str) -> str:
 
     analyze_chain = ANALYZE_PROMPT | llm | output_parser
     analyze_question = analyze_chain.invoke({"user_question": user_question})
-
     return analyze_question
-
-
-def check_leading_question(leading_question: str) -> int:
-    if leading_question.startswith("종료") or leading_question.startswith('"종료'):
-        return 0
-    else:
-        return 1
-
-
-def refine_user_question(user_question: str, user_question_analyze: str) -> str:
-    output_parser = StrOutputParser()
-    REFINE_PROMPT = ChatPromptTemplate.from_messages(
-        [
-            SystemMessage(
-                content=load_prompt("backend/prompts/question_refinement/main_v1.prompt")
-            ),
-            (
-                "human",
-                """사용자 질문: 
-                {user_question}
-
-                사용자 질문 분석: 
-                {user_question_analyze}
-
-                구체화된 질문:""",
-            ),
-        ]
-    )
-
-    refine_chain = REFINE_PROMPT | llm | output_parser
-    refine_question = refine_chain.invoke(
-        {"user_question": user_question, "user_question_analyze": user_question_analyze}
-    )
-
-    return refine_question
-
-def clarify_user_question(
-    user_question: str, user_question_analyze: str, collected_questions: List[str]
-) -> str:
-    output_parser = StrOutputParser()
-
-    prompt = ChatPromptTemplate.from_messages(
-        [
-            SystemMessage(
-                content=load_prompt("backend/prompts/additional_question/main_v1.prompt")
-            ),
-            (
-                "human",
-                "원래 사용자 질문:\n{user_question}\n\n초기 질문 분석:\n{user_question_analyze}\n\n이전 질문 기록:\n{collected_questions}\n\n"
-                + load_prompt("backend/prompts/additional_question/human_postfix_v1.prompt"),
-            ),
-        ]
-    )
-
-    chain = prompt | llm | output_parser
-    chat_history = "\n".join(f"{i+1}. {q}" for i, q in enumerate(collected_questions))
-
-    leading_question = chain.invoke(
-        {
-            "user_question": user_question,
-            "user_question_analyze": user_question_analyze,
-            "collected_questions": chat_history,
-        }
-    )
-
-    return leading_question
-
 
 def create_query(
         user_question,
         user_question_analyze,
+        selected_table,
         today,
         flow_status="KEEP",
 ):
@@ -173,10 +131,9 @@ def create_query(
     """
     try:
         if flow_status == "KEEP":
-            print("user_question:", user_question)
-            print("today:", today)
             # 프롬프트 로드 및 구성
-            prefix = load_prompt("backend/prompts/query_creation/prefix_v1.prompt").format(
+            prefix_filename = f"backend/prompts/query_creation/{selected_table}.prompt"
+            prefix = load_prompt(prefix_filename).format(
                 user_question=user_question,
                 user_question_analyze=user_question_analyze,
                 today=today,
