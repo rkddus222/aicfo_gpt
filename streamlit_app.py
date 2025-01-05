@@ -40,6 +40,7 @@ def main():
                 query_result = data.get("query_result", {"columns": [], "rows": []})
 
                 st.subheader("결과")
+                st.write(sql_query)
                 st.write(final_answer)
 
                 # Query 결과를 DataFrame으로 표시
