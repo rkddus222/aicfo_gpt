@@ -15,6 +15,6 @@ if not OPENAI_API_KEY:
 llm = ChatOpenAI(
     model="gpt-4o",
     temperature=0,
-    model_kwargs={"top_p": 0.9},  # top_p 값을 여기에 설정
+    model_kwargs={"top_p": 0},  # top_p 값을 여기에 설정
     openai_api_key=OPENAI_API_KEY
 )
